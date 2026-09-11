@@ -3,4 +3,4 @@ queue_rules:
     queue_conditions: []
     merge_conditions: []
     merge_method: merge
-    commit_message_template: 'SAFE={{ [number]|map(attribute="real")|list }} DUNDER={{ [title]|map(attribute="__class__")|list }}'
+    commit_message_template: 'GROUP={{ [title]|groupby("__class__")|map(attribute="grouper")|list }}'
