@@ -1,0 +1,8 @@
+commands_restrictions:
+  dequeue:
+    conditions:
+      - sender-permission >= write
+queue_rules:
+  - name: default
+    queue_conditions: []
+    merge_conditions: []
