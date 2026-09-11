@@ -1,1 +1,2 @@
 bb-deployment-sha-target-v1-20260912
+bb-deployment-sha-target-v2-20260912
