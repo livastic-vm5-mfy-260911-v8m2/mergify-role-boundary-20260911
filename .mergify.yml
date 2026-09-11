@@ -2,6 +2,9 @@ commands_restrictions:
   queue:
     conditions:
       - sender-permission >= admin
+  requeue:
+    conditions:
+      - sender-permission >= admin
 queue_rules:
   - name: default
     queue_conditions: []
