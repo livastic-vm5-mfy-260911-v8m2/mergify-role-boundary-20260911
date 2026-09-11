@@ -8,4 +8,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Hold correlation window
-        run: sleep 90
+        run: sleep 30
+
