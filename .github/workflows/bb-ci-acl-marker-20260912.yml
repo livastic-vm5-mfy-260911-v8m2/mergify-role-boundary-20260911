@@ -1,0 +1,10 @@
+name: VM5 private CI ACL marker
+on:
+  push:
+    branches: [main]
+jobs:
+  marker:
+    name: VM5_PRIVATE_CI_ACL_MARKER_20260912_0406
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo VM5_PRIVATE_CI_ACL_MARKER_20260912_0406
