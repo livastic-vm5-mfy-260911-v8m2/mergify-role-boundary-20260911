@@ -1,0 +1,11 @@
+name: VM5 TestIndex Correlation
+on:
+  push:
+    branches: [main]
+jobs:
+  marker:
+    name: VM5_TESTINDEX_CORRELATION_20260912
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hold correlation window
+        run: sleep 90
