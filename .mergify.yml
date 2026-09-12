@@ -1,0 +1,9 @@
+pull_request_rules:
+  - name: vm5 stale requested-reviewer permission probe
+    conditions:
+      - title = VM5_REVIEW_REQUESTED_REVOKE
+      - review-requested = livastic-vm5-secondary-20260911
+    actions:
+      merge:
+        method: squash
+
