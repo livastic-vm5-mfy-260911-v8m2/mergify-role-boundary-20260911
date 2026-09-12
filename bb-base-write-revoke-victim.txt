@@ -1,2 +1,0 @@
-VM5 base-Write revocation victim marker created after unauthorized Workflow Automation enable
-created by A after B lost GitHub repository access and after B re-enabled workflow_automation via stale write
