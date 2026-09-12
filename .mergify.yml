@@ -1,6 +1,0 @@
-pull_request_rules:
-  - name: bb stale-read autofix chain
-    conditions: []
-    actions:
-      merge_typo:
-        method: squash
