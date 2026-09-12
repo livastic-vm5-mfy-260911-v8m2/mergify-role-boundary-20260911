@@ -1,0 +1,7 @@
+pull_request_rules:
+  - name: base-write-revoke victim merge rule
+    conditions:
+      - title = VM5_BASE_WRITE_REVOKE_VICTIM
+    actions:
+      merge:
+        method: squash
