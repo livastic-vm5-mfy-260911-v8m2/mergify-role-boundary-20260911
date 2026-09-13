@@ -1,0 +1,8 @@
+pull_request_rules:
+  - name: VM5 suspended installation fresh private write proof
+    conditions:
+      - title = VM5_SUSPENSION_FRESH_PRIVATE
+      - label = vm5-suspension-trigger
+    actions:
+      comment:
+        message: VM5_SUSPENDED_APP_WRITE_MARKER_260913
