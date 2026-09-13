@@ -1,8 +1,0 @@
-pull_request_rules:
-  - name: VM5 stale conflict close proof
-    conditions:
-      - label = vm5-conflict-stale-close
-      - -conflict
-    actions:
-      close:
-        message: VM5 controlled stale conflict proof.
