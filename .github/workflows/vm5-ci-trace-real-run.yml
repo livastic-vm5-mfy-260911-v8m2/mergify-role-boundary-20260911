@@ -1,0 +1,9 @@
+name: VM5 CI Trace Correlation Fixture
+on:
+  workflow_dispatch:
+jobs:
+  vm5-trace-real-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Emit fixture marker
+        run: echo "VM5_TRACE_REAL_RUN fixture run=$GITHUB_RUN_ID sha=$GITHUB_SHA"
