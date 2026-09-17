@@ -4,20 +4,22 @@ on:
   push:
     branches:
       - main
+    paths:
+      - vm5-healthy-mode.txt
 
 permissions:
   contents: read
 
 jobs:
-  first-regression:
+  stock-control:
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 3
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Build owner-controlled Playwright harness
+      - name: Build stock Playwright harness
         run: |
           set -euo pipefail
           corepack enable
@@ -26,7 +28,58 @@ jobs:
           mkdir vm5-test && cd vm5-test
           cat > package.json <<'EOP'
           {
-            "name": "vm5-healthy-first-regression",
+            "name": "vm5-healthy-first-regression-stock",
+            "private": true,
+            "version": "1.0.0",
+            "devDependencies": {
+              "@mergifyio/playwright": "0.3.7",
+              "@playwright/test": "1.62.1"
+            }
+          }
+          EOP
+          pnpm install --ignore-scripts --no-frozen-lockfile >/dev/null
+          mkdir tests
+          cat > playwright.config.mjs <<'EOC'
+          import { defineConfig } from '@playwright/test';
+          export default defineConfig({
+            testDir: './tests',
+            workers: 1,
+            projects: [{ name: 'chromium' }],
+          });
+          EOC
+          if [[ "$MODE" == "pass" ]]; then
+            ASSERTION="expect('healthy-baseline').toBe('healthy-baseline');"
+          else
+            ASSERTION="expect('healthy-baseline').toBe('first-regression');"
+          fi
+          cat > tests/project-prefix.spec.mjs <<EOT
+          import { test, expect } from '@playwright/test';
+          test('VM5_HEALTHY_FIRST_REGRESSION_260917_B7D2', async () => {
+            ${ASSERTION}
+          });
+          EOT
+      - name: Run stock Playwright
+        working-directory: vm5-test
+        run: pnpm exec playwright test --config playwright.config.mjs
+
+  mergify-consumer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build Mergify Playwright harness
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack prepare pnpm@10.15.1 --activate
+          MODE="$(tr -d '\r\n' < vm5-healthy-mode.txt)"
+          mkdir vm5-test && cd vm5-test
+          cat > package.json <<'EOP'
+          {
+            "name": "vm5-healthy-first-regression-mergify",
             "private": true,
             "version": "1.0.0",
             "devDependencies": {
@@ -57,7 +110,7 @@ jobs:
             ${ASSERTION}
           });
           EOT
-      - name: Run Playwright with Mergify
+      - name: Run Mergify Playwright
         working-directory: vm5-test
         env:
           MERGIFY_TOKEN: ${{ secrets.MERGIFY_TOKEN }}
