@@ -1,0 +1,43 @@
+name: VM5 AutoQ post-enable probe
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-24.04
+    env:
+      MERGIFY_TOKEN: ${{ secrets.VM5_AUTOQ_TOKEN }}
+      MERGIFY_TEST_JOB_NAME: vm5-autoq-post-enable
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install current Mergify CLI
+        run: |
+          set -euo pipefail
+          tmp=$(mktemp -d)
+          curl -fsSL https://raw.githubusercontent.com/Mergifyio/mergify-cli/2026.9.16.1/install.sh -o "$tmp/install.sh"
+          MERGIFY_VERSION=2026.9.16.1 MERGIFY_INSTALL_DIR="$RUNNER_TEMP/mergify-cli-bin" sh "$tmp/install.sh"
+          echo "$RUNNER_TEMP/mergify-cli-bin" >> "$GITHUB_PATH"
+      - name: Create one failing historical JUnit test
+        run: |
+          cat > vm5-autoq-report.xml <<'XML'
+          <testsuites tests="1" failures="1">
+            <testsuite name="vm5-autoq" tests="1" failures="1" time="0.100">
+              <testcase classname="vm5.private.SecretClass" name="test_private_failure_20260912" time="0.100">
+                <failure message="VM5_AUTOQ_POST_ENABLE_FAILURE_20260918" type="AssertionError">VM5_AUTOQ_POST_ENABLE_STACK_20260918</failure>
+              </testcase>
+            </testsuite>
+          </testsuites>
+          XML
+      - name: Upload failing JUnit after Auto-Quarantine enable
+        id: upload
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          mergify ci junit-process vm5-autoq-report.xml --repository livastic-vm5-mfy-260911-v8m2/mergify-role-boundary-20260911 --test-framework pytest --test-language python --test-exit-code 1 2>&1 | tee vm5-autoq-upload.log
+      - name: Show uploader result
+        if: always()
+        run: cat vm5-autoq-upload.log || true
