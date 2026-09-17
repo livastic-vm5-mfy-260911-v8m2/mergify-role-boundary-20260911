@@ -1,22 +1,4 @@
-pull_request_rules:
-  - name: vm5 current custom-path guard autoqueue fullchain
-    conditions:
-      - -mergify-configuration-changed
-    actions:
-      queue:
-
-merge_queue:
-  mode: parallel
-  max_parallel_checks: 2
-
-scopes:
-  source:
-    manual:
-
 queue_rules:
   - name: default
-    batch_size: 1
     queue_conditions: []
-    merge_conditions:
-      - check-success = @github-actions/ci-gate
-    merge_method: merge
+
