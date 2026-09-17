@@ -1,0 +1,44 @@
+name: vm5-vitest-delimiter-protected
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - tests/vm5-delim-protected.spec.mjs
+  pull_request:
+    branches: [main]
+    paths:
+      - tests/vm5-delim-protected.spec.mjs
+
+permissions:
+  contents: read
+
+jobs:
+  vitest-collision-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run owner-controlled Mergify Vitest gate
+        env:
+          MERGIFY_TOKEN: ${{ secrets.MERGIFY_TOKEN }}
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack prepare pnpm@10.15.1 --activate
+          mkdir -p /tmp/vm5-vitest-delim/tests
+          cp tests/vm5-delim-protected.spec.mjs /tmp/vm5-vitest-delim/tests/collision.spec.mjs
+          cd /tmp/vm5-vitest-delim
+          cat > package.json <<'EOP'
+          {"name":"vm5-vitest-delimiter-protected","private":true,"devDependencies":{"@mergifyio/vitest":"0.3.7","vitest":"4.1.10"}}
+          EOP
+          pnpm install --ignore-scripts --no-frozen-lockfile >/dev/null
+          cat > vitest.config.mjs <<'EOC'
+          import { defineConfig } from 'vitest/config';
+          import MergifyReporter from '@mergifyio/vitest';
+          export default defineConfig({test:{reporters:['default', new MergifyReporter()],watch:false}});
+          EOC
+          pnpm exec vitest run --config vitest.config.mjs
