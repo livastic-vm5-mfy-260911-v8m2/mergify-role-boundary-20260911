@@ -1,4 +1,12 @@
+extends: vm5-shared-replacement-inert-260914
+
+commands_restrictions:
+  refresh:
+    conditions:
+      - sender-permission >= admin
+
 queue_rules:
   - name: default
     queue_conditions: []
-
+    merge_conditions:
+      - check-success = vm5-never-pass-extends-collision-260917
