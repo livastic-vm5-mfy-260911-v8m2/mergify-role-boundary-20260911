@@ -1,4 +1,4 @@
-queue_rules:
-  - name: default
-    queue_conditions: []
-
+commands_restrictions:
+  refresh:
+    conditions:
+      - approved-reviews-by = @vm5-review-perm-freshness-260917
