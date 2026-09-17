@@ -1,6 +1,4 @@
 queue_rules:
   - name: default
     queue_conditions: []
-    merge_conditions:
-      - check-success = vm5-new-never-pass-queue-config-260917
-    merge_method: merge
+
