@@ -1,4 +1,4 @@
 commands_restrictions:
   refresh:
     conditions:
-      - approved-reviews-by = livastic-vm5-secondary-20260911
+      - approved-reviews-by = @vm5-lowperm-reviewers-260917
