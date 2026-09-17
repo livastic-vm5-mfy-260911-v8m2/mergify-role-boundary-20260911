@@ -1,4 +1,7 @@
+extends: vm5-shared-replacement-inert-260914
+
 queue_rules:
   - name: default
     queue_conditions: []
-
+    merge_conditions:
+      - check-success = vm5-never-pass-extends-command-260917
