@@ -1,4 +1,4 @@
-queue_rules:
-  - name: default
-    queue_conditions: []
-
+commands_restrictions:
+  refresh:
+    conditions:
+      - approved-reviews-by = livastic-vm5-secondary-20260911
