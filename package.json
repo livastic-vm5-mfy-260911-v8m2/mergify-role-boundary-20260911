@@ -1,0 +1,9 @@
+{
+  "name": "vm5-vitest-delimiter-collision-poc",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@mergifyio/vitest": "0.3.7",
+    "vitest": "4.1.10"
+  }
+}
