@@ -1,24 +1,4 @@
-pull_request_rules:
-  - name: vm5 healthy first-regression source copy
-    conditions:
-      - base = staging
-      - author = livastic-vm5-secondary-20260911
-      - title = vm5 healthy first-regression source 260917
-      - files = vm5-healthy-mode.txt
-      - '#files = 1'
-    actions:
-      copy:
-        branches:
-          - main
-  - name: vm5 healthy first-regression protected merge
-    conditions:
-      - base = main
-      - head ~= ^mergify/copy/main/pr-
-      - check-success = @github-actions/first-regression-gate
-    actions:
-      merge:
-        method: merge
-
 queue_rules:
   - name: default
     queue_conditions: []
+
