@@ -2,5 +2,5 @@ queue_rules:
   - name: default
     queue_conditions: []
     merge_conditions:
-      - status-success = vm5-old-race-gate-260917
+      - status-success = vm5-new-race-gate-260917
     merge_method: merge
