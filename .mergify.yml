@@ -1,24 +1,4 @@
-pull_request_rules:
-  - name: vm5 trusted source copy proof
-    conditions:
-      - base = staging
-      - author = livastic-vm5-secondary-20260911
-      - title = vm5 trusted copy source 260917
-      - files = tests/vm5-copy-proof.test.js
-      - '#files = 1'
-    actions:
-      copy:
-        branches:
-          - main
-  - name: vm5 trusted copy protected merge
-    conditions:
-      - base = main
-      - head ~= ^mergify/copy/main/pr-
-      - check-success = @github-actions/trusted-test
-    actions:
-      merge:
-        method: merge
-
 queue_rules:
   - name: default
     queue_conditions: []
+
