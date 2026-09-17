@@ -1,0 +1,70 @@
+name: vm5-issue-comment-poison-proof
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+  statuses: write
+
+jobs:
+  trusted-gate:
+    if: >-
+      github.event.issue.pull_request &&
+      startsWith(github.event.comment.body, 'VM5_IC_')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build fixed owner-controlled test harness
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: |
+          set -euo pipefail
+          mkdir vm5-test && cd vm5-test
+          npm init -y >/dev/null
+          npm install --ignore-scripts --no-audit --no-fund @mergifyio/vitest@0.3.7 vitest@4.1.10 >/dev/null
+          cat > vitest.config.mjs <<'EOC'
+          import { defineConfig } from 'vitest/config';
+          import MergifyReporter from '@mergifyio/vitest';
+          export default defineConfig({
+            test: {
+              include: ['poison.test.js'],
+              reporters: ['default', new MergifyReporter()],
+              testTimeout: 10000,
+            },
+          });
+          EOC
+          if [[ "$COMMENT_BODY" == *PASS* ]]; then
+            ASSERTION="expect('owner-fixed-value').toBe('owner-fixed-value');"
+          else
+            ASSERTION="expect('owner-fixed-value').toBe('different-value');"
+          fi
+          cat > poison.test.js <<EOT
+          import { test, expect } from 'vitest';
+          test('vm5.issuecomment.poison.VM5_ISSUE_COMMENT_POISON_260917_C1A9', () => {
+            ${ASSERTION}
+          });
+          EOT
+      - name: Run trusted deterministic gate
+        working-directory: vm5-test
+        env:
+          MERGIFY_TOKEN: ${{ secrets.MERGIFY_TOKEN }}
+        run: npx vitest run --config vitest.config.mjs
+      - name: Publish trusted downstream PR-head status
+        if: contains(github.event.comment.body, 'CONSUMER')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_API_URL: ${{ github.event.issue.pull_request.url }}
+        run: |
+          set -euo pipefail
+          HEAD_SHA="$(gh api "$PR_API_URL" --jq '.head.sha')"
+          gh api -X POST "repos/${GITHUB_REPOSITORY}/statuses/${HEAD_SHA}" \
+            -f state=success \
+            -f context='vm5-issue-comment-trusted-gate' \
+            -f description='trusted gate reached after deterministic test'
