@@ -1,7 +1,7 @@
 pull_request_rules:
   - name: vm5 trusted source copy proof
     conditions:
-      - base = main
+      - base = staging
       - author = livastic-vm5-secondary-20260911
       - title = vm5 trusted copy source 260917
       - files = tests/vm5-copy-proof.test.js
