@@ -1,1 +1,4 @@
-config/mergify-policy.yml
+queue_rules:
+  - name: default
+    queue_conditions: []
+
