@@ -1,4 +1,11 @@
+commands_restrictions:
+  queue:
+    conditions:
+      - sender-permission >= write
+      - -changes-requested-reviews-by = @vm5-security-reviewers-260917
+
 queue_rules:
   - name: default
     queue_conditions: []
-
+    merge_conditions:
+      - check-success = vm5-never-merge-team-review-260917
