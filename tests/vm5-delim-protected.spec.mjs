@@ -5,3 +5,11 @@ describe('VM5_DELIM_FRESH_260917 > ADMIN', () => {
     expect('legitimate-quarantined-test').toBe('legitimate-quarantined-test');
   });
 });
+
+describe('VM5_DELIM_FRESH_260917', () => {
+  describe('ADMIN', () => {
+    it('GATE', () => {
+      expect('security-boundary').toBe('must-fail');
+    });
+  });
+});
