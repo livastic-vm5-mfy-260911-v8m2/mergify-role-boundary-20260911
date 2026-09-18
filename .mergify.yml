@@ -1,6 +1,12 @@
 queue_rules:
-  - name: default
+  - name: manual-first
+    autoqueue: false
     queue_conditions: []
     merge_conditions:
-      - check-success = vm5-never-pass-dequeue-authz-260917
-    merge_method: merge
+      - check-success = vm5-never-pass-manual-migration-260918
+  - name: auto-second
+    autoqueue: true
+    queue_conditions:
+      - title = VM5 AUTOQUEUE MIGRATION AB 260918
+    merge_conditions:
+      - check-success = vm5-never-pass-auto-migration-260918
